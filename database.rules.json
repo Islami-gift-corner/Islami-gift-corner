@@ -1,0 +1,21 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "users": {
+      ".read": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'",
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'admin' || (auth.uid === $uid && newData.child('role').val() === data.child('role').val() && newData.child('status').val() === data.child('status').val() && newData.child('allowed_companies').val() === data.child('allowed_companies').val()))"
+      }
+    },
+    "business_profile": {
+      ".read": "auth != null",
+      ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'"
+    },
+    "$other": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    }
+  }
+}

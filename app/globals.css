@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ডিফল্ট প্যালেট (সবুজ)। আসল রঙ app/layout.js থেকে NEXT_PUBLIC_THEME_COLOR অনুযায়ী বসে যায় */
+:root {
+  --c-primary: 15 121 56;
+  --c-primary-light: 87 161 116;
+  --c-primary-dark: 11 92 43;
+  --c-bg: 243 246 244;
+  --c-bg-sidebar: 237 242 238;
+  --c-border: 226 232 228;
+  --c-dark-bg: 15 22 19;
+  --c-dark-card: 26 35 32;
+  --c-dark-sidebar: 20 28 25;
+  --c-dark-border: 42 53 48;
+}
+
+html {
+  font-family: 'Hind Siliguri', 'Inter', sans-serif;
+}
+
+body {
+  @apply bg-background text-text-primary dark:bg-dark-background dark:text-dark-text-primary transition-colors duration-300;
+}
