@@ -60,7 +60,7 @@ function SearchContent() {
 
   if (loading) {
     return (
-      <AppShell role={role || 'sr'}>
+      <AppShell role={role || 'sr'} guard={false}>
         <BackButton />
         <p className="text-sm text-text-muted dark:text-dark-text-secondary">লোড হচ্ছে...</p>
       </AppShell>
@@ -69,7 +69,7 @@ function SearchContent() {
 
   if (!query) {
     return (
-      <AppShell role={role || 'sr'}>
+      <AppShell role={role || 'sr'} guard={false}>
         <BackButton />
         <p className="text-sm text-text-muted dark:text-dark-text-secondary">
           খুঁজতে উপরে সার্চ বক্সে কিছু টাইপ করুন
@@ -133,7 +133,7 @@ function SearchContent() {
   const partiesBasePath = role === 'admin' ? '/admin/parties' : '/sr/parties';
 
   return (
-    <AppShell role={role || 'sr'}>
+    <AppShell role={role || 'sr'} guard={false}>
       <BackButton />
       <h1 className="text-xl font-semibold text-text-primary dark:text-dark-text-primary mb-1">
         সার্চ ফলাফল

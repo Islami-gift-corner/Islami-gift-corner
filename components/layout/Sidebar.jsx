@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useBusiness } from '@/components/providers/BusinessProvider';
+import { SHOPS_ENABLED, SR_ENABLED } from '@/lib/features';
 import {
   LayoutDashboard,
   Building2,
@@ -19,10 +20,13 @@ import {
   Settings,
   ShoppingBag,
   Landmark,
+  Store,
+  Camera,
+  BookOpen,
   X,
 } from 'lucide-react';
 
-const adminLinks = [
+const allAdminLinks = [
   { href: '/admin/dashboard', label: 'ড্যাশবোর্ড', icon: LayoutDashboard },
   { href: '/admin/companies', label: 'কোম্পানি ম্যানেজমেন্ট', icon: Building2 },
   { href: '/admin/products', label: 'প্রোডাক্ট লিস্ট', icon: Package },
@@ -32,11 +36,25 @@ const adminLinks = [
   { href: '/admin/parties', label: 'পার্টি খাতা', icon: Users },
   { href: '/admin/ledger', label: 'ঠালি খাতা', icon: Wallet },
   { href: '/admin/bank', label: 'ব্যাংক', icon: Landmark },
-  { href: '/admin/hire-sr', label: 'SR', icon: UserPlus },
+  { href: '/admin/shops', label: 'দোকান', icon: Store, feature: 'shops' },
+  { href: '/admin/hire-sr', label: 'SR', icon: UserPlus, feature: 'sr' },
   { href: '/admin/business-profile', label: 'বিজনেস প্রোফাইল', icon: UserCog },
   { href: '/admin/profit', label: 'প্রফিট', icon: TrendingUp },
   { href: '/admin/activity-log', label: 'অ্যাক্টিভিটি লগ', icon: History },
   { href: '/admin/backup', label: 'ডেটা ব্যাকআপ', icon: DownloadCloud },
+  { href: '/settings', label: 'সেটিংস', icon: Settings },
+];
+
+// দোকান/SR ফিচার চালু-বন্ধ অনুযায়ী মেনু
+const adminLinks = allAdminLinks.filter(
+  (l) => (l.feature !== 'shops' || SHOPS_ENABLED) && (l.feature !== 'sr' || SR_ENABLED)
+);
+
+const salesmanLinks = [
+  { href: '/shop/dashboard', label: 'ড্যাশবোর্ড', icon: LayoutDashboard },
+  { href: '/shop/sale', label: 'নতুন বিক্রি', icon: Camera },
+  { href: '/shop/sales', label: 'আমার বিক্রয়', icon: Receipt },
+  { href: '/shop/khata', label: 'পার্টি খাতা', icon: BookOpen },
   { href: '/settings', label: 'সেটিংস', icon: Settings },
 ];
 
@@ -51,7 +69,7 @@ const srLinks = [
 export default function Sidebar({ role = 'admin', open, onClose }) {
   const pathname = usePathname();
   const business = useBusiness();
-  const links = role === 'admin' ? adminLinks : srLinks;
+  const links = role === 'admin' ? adminLinks : role === 'salesman' ? salesmanLinks : srLinks;
 
   return (
     <>

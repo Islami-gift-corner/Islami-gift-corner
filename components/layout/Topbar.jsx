@@ -6,7 +6,7 @@ import { signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { Menu, Search, Sun, Moon, Minimize2, LogOut, AlertTriangle } from 'lucide-react';
 
-export default function Topbar({ onToggleSidebar, darkMode, onToggleDarkMode }) {
+export default function Topbar({ onToggleSidebar, darkMode, onToggleDarkMode, showSearch = true }) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [loggingOut, setLoggingOut] = useState(false);
@@ -57,6 +57,7 @@ export default function Topbar({ onToggleSidebar, darkMode, onToggleDarkMode }) 
         </button>
 
         {/* গ্লোবাল সার্চ */}
+        {showSearch && (
         <form onSubmit={handleSearchSubmit} className="flex-1 max-w-md">
           <div className="relative">
             <Search
@@ -77,6 +78,7 @@ export default function Topbar({ onToggleSidebar, darkMode, onToggleDarkMode }) 
             />
           </div>
         </form>
+        )}
 
         <div className="flex-1" />
 

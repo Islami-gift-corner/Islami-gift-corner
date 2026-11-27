@@ -1,21 +1,58 @@
 {
   "rules": {
-    ".read": false,
-    ".write": false,
+    ".read": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'",
+    ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'",
     "users": {
-      ".read": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'",
+      ".indexOn": [
+        "shopId",
+        "role"
+      ],
       "$uid": {
         ".read": "auth != null && auth.uid === $uid",
-        ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'admin' || (auth.uid === $uid && newData.child('role').val() === data.child('role').val() && newData.child('status').val() === data.child('status').val() && newData.child('allowed_companies').val() === data.child('allowed_companies').val()))"
+        ".write": "auth != null && auth.uid === $uid && newData.child('role').val() === data.child('role').val() && newData.child('status').val() === data.child('status').val() && newData.child('shopId').val() === data.child('shopId').val() && newData.child('allowed_companies').val() === data.child('allowed_companies').val()"
       }
     },
     "business_profile": {
-      ".read": "auth != null",
-      ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'"
+      ".read": "auth != null"
     },
-    "$other": {
-      ".read": "auth != null",
-      ".write": "auth != null"
+    "shops": {
+      "$shopId": {
+        ".read": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'salesman' && root.child('users').child(auth.uid).child('shopId').val() === $shopId && root.child('users').child(auth.uid).child('status').val() === 'active'"
+      }
+    },
+    "shop_products": {
+      "$shopId": {
+        ".read": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'salesman' && root.child('users').child(auth.uid).child('shopId').val() === $shopId && root.child('users').child(auth.uid).child('status').val() === 'active'"
+      }
+    },
+    "shop_sales": {
+      "$shopId": {
+        "$uid": {
+          ".read": "auth != null && auth.uid === $uid && root.child('users').child(auth.uid).child('role').val() === 'salesman' && root.child('users').child(auth.uid).child('shopId').val() === $shopId && root.child('users').child(auth.uid).child('status').val() === 'active'",
+          "$saleId": {
+            ".write": "auth != null && auth.uid === $uid && root.child('users').child(auth.uid).child('role').val() === 'salesman' && root.child('users').child(auth.uid).child('shopId').val() === $shopId && root.child('users').child(auth.uid).child('status').val() === 'active' && !data.exists() && newData.exists()",
+            ".validate": "newData.hasChildren(['total','paid','due','date','created_at','items']) && newData.child('salesman_id').val() === auth.uid && newData.child('total').isNumber() && newData.child('total').val() >= 0"
+          }
+        }
+      }
+    },
+    "shop_khata": {
+      "$shopId": {
+        "$uid": {
+          ".read": "auth != null && auth.uid === $uid && root.child('users').child(auth.uid).child('role').val() === 'salesman' && root.child('users').child(auth.uid).child('shopId').val() === $shopId && root.child('users').child(auth.uid).child('status').val() === 'active'",
+          "parties": {
+            "$partyId": {
+              ".write": "auth != null && auth.uid === $uid && root.child('users').child(auth.uid).child('role').val() === 'salesman' && root.child('users').child(auth.uid).child('shopId').val() === $shopId && root.child('users').child(auth.uid).child('status').val() === 'active' && newData.exists()"
+            }
+          },
+          "entries": {
+            "$entryId": {
+              ".write": "auth != null && auth.uid === $uid && root.child('users').child(auth.uid).child('role').val() === 'salesman' && root.child('users').child(auth.uid).child('shopId').val() === $shopId && root.child('users').child(auth.uid).child('status').val() === 'active' && !data.exists() && newData.exists()",
+              ".validate": "newData.hasChildren(['party_id','type','amount','date']) && newData.child('amount').isNumber() && newData.child('amount').val() > 0"
+            }
+          }
+        }
+      }
     }
   }
 }

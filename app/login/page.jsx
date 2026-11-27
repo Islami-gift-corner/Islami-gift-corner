@@ -6,7 +6,19 @@ import { brand } from '@/lib/brand';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { ref, get } from 'firebase/database';
 import { auth, database } from '@/lib/firebase';
-import { Mail, Lock, Eye, EyeOff, ShieldCheck, UserRound } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ShieldCheck, UserRound, Store } from 'lucide-react';
+import { SHOPS_ENABLED, SR_ENABLED } from '@/lib/features';
+
+// কোন কোন ট্যাব দেখাবে — features.js অনুযায়ী
+const ROLE_TABS = [
+  { id: 'admin', label: 'Admin Login', title: 'অ্যাডমিন লগইন', name: 'Admin', icon: ShieldCheck, home: '/admin/dashboard' },
+  ...(SHOPS_ENABLED
+    ? [{ id: 'salesman', label: 'Salesman Login', title: 'সেলসম্যান লগইন', name: 'Salesman', icon: Store, home: '/shop/dashboard' }]
+    : []),
+  ...(SR_ENABLED
+    ? [{ id: 'sr', label: 'SR Login', title: 'এসআর লগইন', name: 'SR', icon: UserRound, home: '/sr/dashboard' }]
+    : []),
+];
 
 export default function LoginPage() {
   const router = useRouter();
@@ -57,17 +69,13 @@ export default function LoginPage() {
 
       if (userData.role !== role) {
         setError(
-          `এই একাউন্টটি "${userData.role === 'admin' ? 'Admin' : 'SR'}" — সঠিক ট্যাব থেকে লগইন করুন`
+          `এই একাউন্টটি "${ROLE_TABS.find((t) => t.id === userData.role)?.name || userData.role}" — সঠিক ট্যাব থেকে লগইন করুন`
         );
         setLoading(false);
         return;
       }
 
-      if (userData.role === 'admin') {
-        router.push('/admin/dashboard');
-      } else {
-        router.push('/sr/dashboard');
-      }
+      router.push(ROLE_TABS.find((t) => t.id === userData.role)?.home || '/admin/dashboard');
     } catch (err) {
       if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
         setError('ইমেইল অথবা পাসওয়ার্ড ভুল হয়েছে');
@@ -111,36 +119,26 @@ export default function LoginPage() {
             className="flex gap-1 p-1 rounded-xl bg-background dark:bg-dark-background
                        border border-border dark:border-dark-border mb-6"
           >
-            <button
-              type="button"
-              onClick={() => setRole('admin')}
-              className={`flex-1 flex items-center justify-center gap-2 rounded-lg py-2 text-sm font-medium transition-colors
-                ${
-                  role === 'admin'
-                    ? 'bg-gradient-to-r from-primary to-primary-light text-white shadow-sm'
-                    : 'text-text-secondary dark:text-dark-text-secondary'
-                }`}
-            >
-              <ShieldCheck size={16} />
-              Admin Login
-            </button>
-            <button
-              type="button"
-              onClick={() => setRole('sr')}
-              className={`flex-1 flex items-center justify-center gap-2 rounded-lg py-2 text-sm font-medium transition-colors
-                ${
-                  role === 'sr'
-                    ? 'bg-gradient-to-r from-primary to-primary-light text-white shadow-sm'
-                    : 'text-text-secondary dark:text-dark-text-secondary'
-                }`}
-            >
-              <UserRound size={16} />
-              SR Login
-            </button>
+            {ROLE_TABS.map(({ id, label, icon: Icon }) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setRole(id)}
+                className={`flex-1 flex items-center justify-center gap-2 rounded-lg py-2 text-sm font-medium transition-colors
+                  ${
+                    role === id
+                      ? 'bg-gradient-to-r from-primary to-primary-light text-white shadow-sm'
+                      : 'text-text-secondary dark:text-dark-text-secondary'
+                  }`}
+              >
+                <Icon size={16} />
+                {label}
+              </button>
+            ))}
           </div>
 
           <h1 className="text-lg font-semibold text-text-primary dark:text-dark-text-primary mb-6">
-            {role === 'admin' ? 'অ্যাডমিন লগইন' : 'এসআর লগইন'}
+            {ROLE_TABS.find((t) => t.id === role)?.title}
           </h1>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">

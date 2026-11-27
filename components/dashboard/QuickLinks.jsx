@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { SHOPS_ENABLED, SR_ENABLED } from '@/lib/features';
 import {
   Building2,
   Package,
@@ -13,9 +14,11 @@ import {
   TrendingUp,
   ShoppingBag,
   Landmark,
+  Store,
 } from 'lucide-react';
 
-const LINKS = [
+const ALL_LINKS = [
+  { href: '/admin/shops', label: 'দোকান', icon: Store, feature: 'shops' },
   { href: '/admin/companies', label: 'কোম্পানি', icon: Building2 },
   { href: '/admin/products', label: 'প্রোডাক্ট', icon: Package },
   { href: '/admin/stock', label: 'স্টক বুক', icon: Warehouse },
@@ -24,10 +27,14 @@ const LINKS = [
   { href: '/admin/parties', label: 'পার্টি খাতা', icon: Users },
   { href: '/admin/ledger', label: 'ঠালি খাতা', icon: Wallet },
   { href: '/admin/bank', label: 'ব্যাংক', icon: Landmark },
-  { href: '/admin/hire-sr', label: 'SR', icon: UserPlus },
+  { href: '/admin/hire-sr', label: 'SR', icon: UserPlus, feature: 'sr' },
   { href: '/admin/business-profile', label: 'বিজনেস প্রোফাইল', icon: UserCog },
   { href: '/admin/profit', label: 'প্রফিট', icon: TrendingUp },
 ];
+
+const LINKS = ALL_LINKS.filter(
+  (l) => (l.feature !== 'shops' || SHOPS_ENABLED) && (l.feature !== 'sr' || SR_ENABLED)
+);
 
 export default function QuickLinks() {
   return (

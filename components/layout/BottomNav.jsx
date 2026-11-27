@@ -2,14 +2,26 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { UserRound, Wallet, LayoutDashboard, Receipt, Users, UserCog } from 'lucide-react';
+import { UserRound, Wallet, LayoutDashboard, Receipt, Users, UserCog, Store, Camera, BookOpen } from 'lucide-react';
+import { SHOPS_ENABLED, SR_ENABLED } from '@/lib/features';
 
 const adminTabs = [
-  { href: '/admin/hire-sr', label: 'SR', icon: UserRound },
+  SR_ENABLED
+    ? { href: '/admin/hire-sr', label: 'SR', icon: UserRound }
+    : SHOPS_ENABLED
+    ? { href: '/admin/shops', label: 'দোকান', icon: Store }
+    : { href: '/admin/hire-sr', label: 'SR', icon: UserRound },
   { href: '/admin/ledger', label: 'ঠালি', icon: Wallet },
   { href: '/admin/dashboard', label: 'হোম', icon: LayoutDashboard },
   { href: '/admin/invoices', label: 'ইনভয়েস', icon: Receipt },
   { href: '/admin/parties', label: 'পার্টি', icon: Users },
+];
+
+const salesmanTabs = [
+  { href: '/shop/khata', label: 'খাতা', icon: BookOpen },
+  { href: '/shop/sales', label: 'বিক্রয়', icon: Receipt },
+  { href: '/shop/dashboard', label: 'হোম', icon: LayoutDashboard },
+  { href: '/shop/sale', label: 'বিক্রি', icon: Camera },
 ];
 
 const srTabs = [
@@ -22,7 +34,7 @@ const srTabs = [
 
 export default function BottomNav({ role = 'admin', onOpenMenu }) {
   const pathname = usePathname();
-  const tabs = role === 'admin' ? adminTabs : srTabs;
+  const tabs = role === 'admin' ? adminTabs : role === 'salesman' ? salesmanTabs : srTabs;
 
   return (
     <nav

@@ -1,0 +1,89 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "companies": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "parties": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "invoices": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "ledger": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "sr_ledger": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "retail_products": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "retail_customers": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "retail_sales": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "personal_debts": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "bank_loans": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "ledger_notes": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "ledger_categories": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "company_transactions": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "warranty_claims": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "stock_movements": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "invoice_counter": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "retail_sale_counter": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "activity_log": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "business_profile": {
+      ".read": "auth != null",
+      ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'"
+    },
+    "users": {
+      ".read": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'",
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'admin' || (auth.uid === $uid && newData.child('role').val() === data.child('role').val() && newData.child('status').val() === data.child('status').val() && newData.child('allowed_companies').val() === data.child('allowed_companies').val()))"
+      }
+    }
+  }
+}
